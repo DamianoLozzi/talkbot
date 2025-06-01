@@ -1,0 +1,13 @@
+config.ini
+nohup.out
+run.pid
+run.sh
+TODO.md
+.vscode/PythonImportHelper-v2-Completion.json
+.vscode/PythonImportHelper-v2-Completion.sync-conflict-20250505-190144-JDXNVHB.json
+.vscode/settings.json
+*.pyc
+venv
+.venv
+logs
+
