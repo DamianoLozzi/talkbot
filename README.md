@@ -1,6 +1,6 @@
 # TalkBot
 
-**TalkBot** is a Python application that monitors Talk chats on Nextcloud and sends/receives messages via Ollama. With Docker and Docker Compose, you can start the bot in a few commands without exposing credentials in the repository.
+**TalkBot** is a Python application that monitors Talk chats on Nextcloud and sends/receives messages via Ollama. 
 
 ---
 
