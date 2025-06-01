@@ -1,8 +1,8 @@
 import asyncio
 
 from nc_py_api.talk import TalkMessage, Conversation
-from talkbot.lib.nextcloud_client import NextcloudClient
-from lib.ollama_chat import OllamaChat,Message
+from lib.nextcloud_client import NextcloudClient
+from lib.ollama_client import OllamaChat,Message
 from simple_logger import Logger
 from typing import List
 from lib.constants import REACTIONS
@@ -47,8 +47,7 @@ class MessageProcessor:
                     ollama_messages: List[Message] = [Message(role="system", content=self.ollama.system_prompt)]
                     ollama_messages.extend(self.mappers.talk_message_to_ollama_message(message,self.ollama.assistant_id) for message in reversed(filtered_messages))
                     
-                    ###Fix multiple answers for subsequent messages:
-                    last_message : TalkMessage = await self.nc_bot.retrieve_message_by_id(conversation_id=conversation.conversation_id,message_id=conversation.last_message.message_id) # Get the last message and keep it in memory
+                    last_message : TalkMessage = await self.nc_bot.retrieve_message_by_id(conversation_id=conversation.conversation_id,message_id=conversation.last_message.message_id) # type:ignore
 
                     await self.nc_bot.set_reaction(conversation=conversation,message=last_message,reaction=REACTIONS.get("ANSWERING")) 
                     log.debug(f"messages:{len(messages)}")
@@ -56,13 +55,11 @@ class MessageProcessor:
                     log.debug(f"ollama messages:{len(ollama_messages)}")
                     response = await self.ollama.send_message_chat(ollama_messages) 
                     
-                    ### Update the conversation
                     updated_conv :Conversation = await self.nc_bot.retrieve_conversation_by_id(conversation.conversation_id)
-                    new_last_message:TalkMessage=updated_conv.last_message
+                    new_last_message:TalkMessage=updated_conv.last_message # type:ignore
                     
                     if last_message.message_id == new_last_message.message_id:
-                    ###
-                        answered:bool=await self.nc_bot.reply_to_conversation(conversation, response)
+                        answered:bool=await self.nc_bot.reply_to_conversation(conversation, response) # type:ignore
                         log.info(f"[Worker] Replied to {conversation.display_name}.")
                         
                         if answered:

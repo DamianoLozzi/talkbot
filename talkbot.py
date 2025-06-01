@@ -1,9 +1,9 @@
 import asyncio
 
 from nc_py_api.talk import Conversation, TalkMessage,ConversationType
-from lib.ollama_chat import OllamaChat as OllamaAI
+from lib.ollama_client import OllamaChat as OllamaAI
 from lib.message_processor import MessageProcessor
-from talkbot.lib.nextcloud_client import NextcloudClient
+from lib.nextcloud_client import NextcloudClient
 from simple_logger import Logger
 from lib.config import Config
 from typing import List
@@ -34,7 +34,10 @@ class TalkBot:
                     await self.nc_bot.clear_reactions(conversation=conversation)
                     log.info(f"[Monitor] Unread messages found in {conversation.display_name}. Adding conversation to queue...")
                     await self.processor.add_to_queue(conversation)
-                    await self.nc_bot.set_reaction(conversation=conversation,message=conversation.last_message,reaction=REACTIONS.get("SEEN"))
+                    if conversation.last_message is not None:
+                        await self.nc_bot.set_reaction(conversation=conversation,message=conversation.last_message,reaction=REACTIONS.get("SEEN"))
+                    else:
+                        log.warning(f"[Monitor] Conversation {conversation.conversation_id} has no last_message; skipping reaction.")
             except Exception as e:
                 log.error(f"[Monitor] Failed to monitor and reply: {e}")
             

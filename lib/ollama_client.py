@@ -21,7 +21,7 @@ class OllamaChat:
         self.client = AsyncClient(host=self.host)
         self.max_retries: int = int(self.conf.NEXTCLOUD_MAX_RETRIES)
         self.retry_delay: int = int(self.conf.NEXTCLOUD_RETRY_DELAY)
-        log.info("[Ollama] Initialized with model: " + self.model)
+        log.info(f"[Ollama] Initialized with model: {self.model}")
 
     @retry_async()
     async def send_message_chat(self, messages: List[Message]) -> ChatResponse:
@@ -29,9 +29,9 @@ class OllamaChat:
                 response_content = response.message.content if response.message else "No response received."
                 if response_content not in [None,'']:
                     log.info("[Ollama] Response correctly received.")
-                    return response_content
+                    return response_content #type:ignore
                 else:
-                    raise Exception("Ollama returned an invalid response")
+                    raise RuntimeError("Ollama returned an invalid response")
     
     @retry_async()
     async def send_message_generate(self, message: str) -> GenerateResponse:
@@ -40,7 +40,7 @@ class OllamaChat:
                 result = response.response if response.response else "No response received."
                 log.info("[Ollama] Response correctly received.")
                 log.debug("[Ollama] Response received: " + result)
-                return result
+                return result #type:ignore
         
 if __name__ == "__main__":
     async def test_ollama():
