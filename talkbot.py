@@ -35,7 +35,10 @@ class TalkBot:
                     log.info(f"[Monitor] Unread messages found in {conversation.display_name}. Adding conversation to queue...")
                     await self.processor.add_to_queue(conversation)
                     if conversation.last_message is not None:
-                        await self.nc_bot.set_reaction(conversation=conversation,message=conversation.last_message,reaction=REACTIONS.get("SEEN"))
+                        try:
+                            await self.nc_bot.set_reaction(conversation=conversation,message=conversation.last_message,reaction=REACTIONS.get("SEEN"))
+                        except Exception as e:
+                            log.warning("[Monitor] could not set reaction")
                     else:
                         log.warning(f"[Monitor] Conversation {conversation.conversation_id} has no last_message; skipping reaction.")
             except Exception as e:
